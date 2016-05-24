@@ -57,7 +57,7 @@ if [ $# -eq 1 -a "$1" = "-h" ]; then
 	print_usage
 	exit 0
 elif [ $# -eq 1 -a "$1" = "--info" ]; then
-	sed '/^#info-start$/,/^#info-end$/!d;//d' $0
+	sed '/^#info-start$/,/^#info-end$/!d;//d' $0 | sed 's/#info //'
 	exit 0
 elif [ $# -eq 1 -a "$1" = "--dump" ]; then
 	dump_payload
