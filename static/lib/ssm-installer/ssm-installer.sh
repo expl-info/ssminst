@@ -83,12 +83,11 @@ else
 	repopath=$(readlink -f $1); shift 1
 fi
 
-ssmusepkg=$(ls -1 "${repopath}" | sort | grep -m 1 -e 'ssmuse_.*_all.ssm')
-ssmpkg=$(ls -1 "${repopath}" | sort | grep -m 1 -e 'ssm_.*_all.ssm')
-pkgs=$(ls -1 "${repopath}" | sort | grep '.ssm' | egrep -v "${ssmusepkg}|${ssmpkg}")
+ssmusepkg=$(find "${repopath}" | sort | grep -m 1 -e 'ssmuse_.*_all.ssm')
+ssmpkg=$(find  "${repopath}" | sort | grep -m 1 -e 'ssm_.*_all.ssm')
+pkgs=$(find "${repopath}" | sort | grep '.ssm' | egrep -v "${ssmusepkg}|${ssmpkg}")
 
 if [ -n "${ssmpkg}" ]; then
-	ssmpkg="${repopath}/${ssmpkg}"
 	ssmpkgname=$(basename "${ssmpkg}")
 	ssmpkgname="${ssmpkgname%.ssm}"
 
@@ -117,7 +116,6 @@ else
 fi
 
 if [ -n "${ssmusepkg}" ]; then
-	ssmusepkg="${repopath}/${ssmusepkg}"
 	ssmusepkgname=$(basename "${ssmusepkg}")
 	ssmusepkgname="${ssmusepkgname%.ssm}"
 
@@ -137,7 +135,7 @@ if [ -n "${pkgs}" ]; then
 		pkgname="${pkgname%.ssm}"
 
 		echo "installing+publishing pkg (${pkg})"
-		ssm install -d "${dompath}" -f "${repopath}/${pkg}"
+		ssm install -d "${dompath}" -f "${pkg}"
 		plat="${pkgname##*_}"
 		ssm publish -d "${dompath}" -p "${pkgname}" -pp "${plat}"
 	done
