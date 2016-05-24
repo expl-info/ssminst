@@ -98,6 +98,7 @@ if [ -n "${ssmpkg}" ]; then
 		exit 1
 	fi
 
+	echo "unpacking temporary ssm package (${ssmpkg})..."
 	cd "${workdir}"
 	tar xvfz "${ssmpkg}"
 	echo
