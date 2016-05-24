@@ -1,0 +1,56 @@
+#! /bin/bash
+#
+# ssm-installer-creator.sh
+
+PROG_NAME=$(basename $0)
+VERSION=0.1
+
+print_usage() {
+	echo "\
+usage: ${PROG_NAME} <installerpath> <repopath>
+
+Create a self-contained ssm installer to install+publish one or more
+SSM packages. The installer file, itself, will contain a payload
+with all the packages found in <repopath>.
+
+If ssm and/or ssmuse package are found in <repopath>, they will also
+be installed and published. If not, an existing install of ssm will be
+needed/used when the installer is run."
+}
+
+if [ $# -eq 1 -a "$1" = "-h" ]; then
+	print_usage
+	exit 0
+elif [ $# -ne 2 ]; then
+	echo "error: bad/missing argument" 1>&2
+	exit 1
+fi
+
+heredir=$(readlink -f $(dirname $0))
+installerpath=$(readlink -f $1); shift 1
+repopath=$(readlink -f $1); shift 1
+
+has_ssm="no"
+has_ssmuse="no"
+
+if find "${repopath}" -name 'ssm_.*_all.ssm' > /dev/null; then
+	has_ssm="yes"
+fi
+if find "${repopath}" -name 'ssmuse_.*_all.ssm' > /dev/null; then
+	has_ssmuse="yes"
+fi
+
+cp "${heredir}/../lib/ssm-installer/ssm-installer.sh" "${installerpath}"
+echo "
+exit 0
+
+#info-start
+#info creator-version: ${VERSION}
+#info created-by:      $(whoami)@$(hostname)
+#info created-on:      $(date)
+#info has-ssm:         ${has_ssm}
+#info has-ssmuse:      ${has_ssmuse}
+#info-end
+
+PAYLOAD:" >> "${installerpath}"
+(cd "${repopath}"; tar cvfz - . >> "${installerpath}" )
