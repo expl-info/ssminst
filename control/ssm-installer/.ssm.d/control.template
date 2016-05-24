@@ -1,0 +1,7 @@
+Package: ssm-installer
+Version: 0.1
+Section: admin
+Priority: optional
+Platform: all
+Maintainer: John Marshall <John.Marshall@ssc-spc.gc.ca>
+Description: Create SSM installer
