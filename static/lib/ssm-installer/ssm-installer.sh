@@ -15,6 +15,18 @@ cleanup() {
 	done
 }
 
+dump_payload() {
+	local dumppath
+
+	dumppath="$0.tgz"
+
+	lineno=$(grep --text --line-number '^PAYLOAD:$' $0 | cut -d: -f1)
+	lineno=$((lineno + 1 ))
+	tail -n +${lineno} $0 >> "${dumppath}"
+
+	echo "info: payload dumped to file (${dumppath})"
+}
+
 trap 'cleanup' EXIT
 
 PROG_NAME=$(basename $0)
@@ -24,6 +36,7 @@ print_usage() {
 usage: ${PROG_NAME} <dompath>
        ${PROG_NAME} <dompath> <repopath>
        ${PROG_NAME} --info
+       ${PROG_NAME} --dump
 
 Create a new domain at <dompath> and install+publish packages. The
 default behavior is to search for and unpack the package repository
@@ -35,7 +48,8 @@ they will be installed first. If they are not in the repository, but
 the ssm tool is available, it will be used. All packages in the
 repository will be installed and published.
 
-Use --info to display installer information.
+Use --info to display installer information. Use --dump to save the
+payload to a file.
 " 1>&2
 }
 
@@ -44,6 +58,9 @@ if [ $# -eq 1 -a "$1" = "-h" ]; then
 	exit 0
 elif [ $# -eq 1 -a "$1" = "--info" ]; then
 	sed '/^#info-start$/,/^#info-end$/!d;//d' $0
+	exit 0
+elif [ $# -eq 1 -a "$1" = "--dump" ]; then
+	dump_payload
 	exit 0
 elif [ $# -ne 1 -a $# -ne 2 ]; then
 	echo "error: bad/missing argument" 1>&2
