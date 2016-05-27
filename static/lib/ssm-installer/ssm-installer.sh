@@ -148,9 +148,11 @@ if [ -n "{ssmusepkg}" ]; then
 else
 	pref=""
 fi
-echo "to bootstrap for sh:"
-echo "    . \"${pref}/ssmuse-sh\" -d \"${dompath}\""
+echo "to bootstrap from this install (for sh):"
+echo "    . \"${pref}/ssmuse-boot.sh\""
+echo "    . ssmuse-sh -d \"${dompath}\""
 echo
-echo "to bootstrap for csh:"
-echo "    . \"${pref}/ssmuse-csh\" -d \"${dompath}\""
+echo "to bootstrap from this install (for csh):"
+echo "    . \"${pref}/ssmuse-boot.csh\""
+echo "    . ssmuse-csh -d \"${dompath}\""
 echo
